@@ -1,0 +1,41 @@
+version: '3.7'
+
+services:
+  db:
+    container_name: gogqlserv-db-container
+    image: mariadb:10.5.3
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: dbname
+      MYSQL_USER: username
+      MYSQL_PASSWORD: password
+    networks:
+      - default
+    ports:
+      - 3306:3306
+    volumes:
+      - ./docker/db/conf:/etc/mysql/conf.d
+      - ./docker/db/init:/docker-entrypoint-initdb.d
+      - ./docker/db/logs:/var/log/mysql
+
+  golang:
+    container_name: gogqlserv-golang-container
+    image: golang:1.14.4
+    environment:
+      GO111MODULE: 'on'
+      TZ: Asia/Tokyo
+      DSN: 'username:password@tcp(db:3306)/dbname?parseTime=true&loc=Asia%2FTokyo'
+    depends_on:
+      - db
+    networks:
+      - default
+    ports:
+      - 8080:8080
+    tty: true
+    volumes:
+      - .:/go/src/github.com/rkunihiro/gogqlserv
+    working_dir: /go/src/github.com/rkunihiro/gogqlserv
+
+networks:
+  default:
+    name: gogqlserv-default-network
