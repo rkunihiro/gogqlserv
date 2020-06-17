@@ -2,14 +2,14 @@
 #
 
 type User {
-    id: Int!
+    id: ID!
     name: String!
 }
 
 type Query {
     users: [User!]!
     findUser(
-        id: Int!
+        id: ID!
     ): User
 }
 

@@ -10,32 +10,19 @@ import (
 	"github.com/rkunihiro/gogqlserv/graph/generated"
 )
 
-func (r *mutationResolver) AddUser(ctx context.Context, name string) (*entity.User, error) {
-	user := &entity.User{
-		Name: name,
-	}
-	err := r.db.Save(user)
-	return user, err
+func (r *mutationResolver) AddUser(_ context.Context, name string) (*entity.User, error) {
+	return r.userRepo.Register(name)
 }
 
-func (r *queryResolver) Users(ctx context.Context) ([]*entity.User, error) {
-	users := make([]*entity.User, 0)
-	err := r.db.Find(&users)
-	return users, err
+func (r *queryResolver) Users(_ context.Context) ([]*entity.User, error) {
+	return r.userRepo.FindAll()
 }
 
-func (r *queryResolver) FindUser(ctx context.Context, id int) (*entity.User, error) {
-	users := make([]*entity.User, 0)
-	err := r.db.Find(&users, map[string]interface{}{
-		"id": id,
-	})
-	if len(users) != 1 {
-		return nil, nil
-	}
-	return users[0], err
+func (r *queryResolver) FindUser(_ context.Context, id int) (*entity.User, error) {
+	return r.userRepo.FindByID(entity.UserID(id))
 }
 
-func (r *userResolver) ID(ctx context.Context, obj *entity.User) (int, error) {
+func (r *userResolver) ID(_ context.Context, obj *entity.User) (int, error) {
 	return int(obj.ID), nil
 }
 

@@ -1,19 +1,19 @@
 package graph
 
 import (
-	"github.com/rkunihiro/gogqlserv/internal"
+	"github.com/rkunihiro/gogqlserv/repos"
 )
 
-// This file will not be regenerated automatically.
-//
-// It serves as dependency injection for your app, add any dependencies you require here.
-
+// Resolver
 type Resolver struct {
-	db internal.DBClient
+	userRepo repos.UserRepo
 }
 
-func NewResolver(db internal.DBClient) (*Resolver, error) {
+// NewResolver
+func NewResolver(
+	userRepo repos.UserRepo,
+) (*Resolver, error) {
 	return &Resolver{
-		db: db,
+		userRepo: userRepo,
 	}, nil
 }
